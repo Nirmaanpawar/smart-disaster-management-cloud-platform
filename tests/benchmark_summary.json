@@ -1,0 +1,22 @@
+{
+  "project": "Smart Disaster Management & Aerial Drone Reconnaissance Platform",
+  "institution": "MIT World Peace University, Pune",
+  "course_code": "ECA4PE23A",
+  "benchmark_date": "2026-10-18T02:56:05.118445Z",
+  "target_endpoint": "https://np1yqzqgvd.execute-api.ap-southeast-2.amazonaws.com/prod/incidents",
+  "sample_size_n": 20,
+  "total_duration_sec": 21.15,
+  "metrics": {
+    "successful_requests": 20,
+    "failed_requests": 0,
+    "observed_availability_pct": 100.0,
+    "latency_ms": {
+      "min": 941.14,
+      "avg": 1057.51,
+      "median_p50": 1049.73,
+      "p95": 1202.81,
+      "p99": 1202.81,
+      "max": 1202.81
+    }
+  }
+}

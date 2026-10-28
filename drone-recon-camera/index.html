@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Aerial Drone Reconnaissance & Telemetry Ingestion | Smart Disaster Management</title>
+  
+  <!-- Clean Professional SaaS Typography (Google Fonts) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css?v=6.0">
+</head>
+<body class="drone-body">
+
+  <!-- ========================================================
+       TOP ENTERPRISE SAAS HEADER: Breadcrumbs & Project Actions
+       ======================================================== -->
+  <header class="main-header">
+    <div class="header-top-bar">
+      <!-- Breadcrumb Bar -->
+      <div class="breadcrumb-trail">
+        <span>Operations</span>
+        <span class="bc-sep">&rsaquo;</span>
+        <span class="bc-active">Aerial Drone Reconnaissance & Telemetry Ingestion</span>
+      </div>
+
+      <!-- Live Clock & Status Strip -->
+      <div class="header-system-meta">
+        <!-- Live Mission Clock -->
+        <div class="header-clock-pill">
+          <span class="clock-label">SYSTEM TIME</span>
+          <strong id="liveMissionClock">00:00:00 UTC</strong>
+        </div>
+
+        <!-- AWS Cloud Status Pill -->
+        <div class="aws-status-pill" id="cloudStatusBadge">
+          <span class="status-indicator-green"></span>
+          <div class="status-pill-text">
+            <span class="status-name" id="cloudStatusText">AWS Live Connected</span>
+            <small class="status-region" id="cloudRegionText">Mumbai &bull; ap-south-1</small>
+          </div>
+        </div>
+
+        <!-- Refresh GPS Fix Button -->
+        <button id="refreshGpsBtn" class="btn-icon-action" title="Refresh Satellite GPS Fix">
+          🔄
+        </button>
+      </div>
+    </div>
+
+    <!-- Project Identity & Main Action Row -->
+    <div class="header-project-row">
+      <div class="project-identity-area">
+        <div class="project-title-group">
+          <div class="project-title-dropdown">
+            <span class="project-prefix">Project:</span>
+            <h1 class="project-name">Smart Disaster Management Cloud Platform</h1>
+            <span class="dropdown-caret">▾</span>
+            <span class="project-star-icon" title="Favorited Project">★</span>
+          </div>
+          <div class="project-meta-links">
+            <span class="project-url-badge">
+              <span class="url-dot"></span>
+              <span>ap-south-1.amazonaws.com</span>
+              <span class="url-ext">↗</span>
+            </span>
+            <span class="project-tag-btn">+ Add Mission Tag</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="header-action-buttons">
+        <!-- Link to Rescue Dashboard -->
+        <a href="../rescue-dashboard/index.html" class="btn-secondary-action">
+          <span>🛡️</span>
+          <span>Return to Rescue Dashboard ↗</span>
+        </a>
+
+        <!-- Config Drawer Toggle -->
+        <button type="button" id="toggleEndpointDrawerBtn" class="btn-secondary-action">
+          <span>⚙️</span>
+          <span>Cloud Config</span>
+        </button>
+
+        <!-- Primary Transmit Scroll Button -->
+        <button type="button" class="btn-primary-action" onclick="document.getElementById('reconForm').scrollIntoView({behavior: 'smooth'})">
+          <span>⚡</span>
+          <span>Transmit Telemetry</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================
+       CLOUD ENDPOINT DRAWER (Configurable URL)
+       ======================================================== -->
+  <div id="endpointDrawer" class="config-drawer hidden">
+    <div class="drawer-container">
+      <div class="drawer-row">
+        <span class="drawer-label">AWS API Gateway URL:</span>
+        <input type="text" id="apiUrlInput" value="https://np1yqzqgvd.execute-api.ap-southeast-2.amazonaws.com/prod/incidents" placeholder="https://xyz.execute-api.ap-southeast-2.amazonaws.com/prod/incidents">
+        <button type="button" id="resetEndpointBtn" class="btn-drawer-secondary">Default AWS Cloud</button>
+        <button type="button" id="closeDrawerBtn" class="btn-drawer-close">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="drone-shell">
+
+    <!-- ========================================================
+         SECTION 1: AERIAL TELEMETRY STRIP (SEMrush Style Card)
+         ======================================================== -->
+    <section class="saas-card">
+      <div class="card-header-bar clean-border-bottom">
+        <div class="card-header-title">
+          <h2>Aerial Telemetry & Link Status</h2>
+          <span class="info-circle" title="Real-time avionics telemetry from drone flight controller">i</span>
+        </div>
+        <div class="card-header-filters">
+          <span class="delta-pill delta-blue" id="droneIdDisplay">UAV-SCOUT-01</span>
+          <span class="delta-pill delta-green">Autonomous Flight Active</span>
+        </div>
+      </div>
+
+      <div class="telemetry-metrics-strip">
+        <!-- Metric 1: Optical Air Unit -->
+        <div class="metric-column-block">
+          <div class="metric-label-row">
+            <span>Reconnaissance Unit</span>
+            <span class="info-circle" title="Current aerial surveillance callsign">i</span>
+          </div>
+          <div class="metric-num-row">
+            <strong class="kpi-big-number color-blue">UAV-01</strong>
+            <span class="delta-pill delta-blue">Alpha Scout</span>
+          </div>
+          <div class="metric-footer-note">Payload: HD Optical + Thermal Sensor</div>
+        </div>
+
+        <!-- Metric 2: Flight Altitude -->
+        <div class="metric-column-block">
+          <div class="metric-label-row">
+            <span>Flight Altitude (AGL)</span>
+            <span class="info-circle" title="Above ground level laser altimeter reading">i</span>
+          </div>
+          <div class="metric-num-row">
+            <strong class="kpi-big-number color-green" id="telemetryAlt">42.5m</strong>
+            <span class="delta-pill delta-green">Stable AGL</span>
+          </div>
+          <div class="metric-footer-note">Laser Altimeter Locked</div>
+        </div>
+
+        <!-- Metric 3: Speed & Vector -->
+        <div class="metric-column-block">
+          <div class="metric-label-row">
+            <span>Ground Speed & Vector</span>
+            <span class="info-circle" title="Horizontal flight velocity and heading">i</span>
+          </div>
+          <div class="metric-num-row">
+            <strong class="kpi-big-number color-amber" id="telemetrySpeed">21 km/h</strong>
+            <span class="delta-pill delta-amber">042° NE</span>
+          </div>
+          <div class="metric-footer-note">Wind Resistance Vector: Nominal</div>
+        </div>
+
+        <!-- Metric 4: Battery & Satellite Link -->
+        <div class="metric-column-block">
+          <div class="metric-label-row">
+            <span>Avionics Battery & GPS</span>
+            <span class="info-circle" title="Remaining LiPo battery capacity and GNSS satellite lock">i</span>
+          </div>
+          <div class="metric-num-row">
+            <strong class="kpi-big-number color-blue" id="telemetryBatt">87%</strong>
+            <span class="delta-pill delta-green" id="telemetrySats">12 DGPS</span>
+          </div>
+          <div class="metric-footer-note">Safe Return-To-Home Range: 18.4 km</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SECTION 2: OPTICAL VIEWPORT & COMPUTER VISION
+         ======================================================== -->
+    <section class="saas-card">
+      <div class="card-header-bar clean-border-bottom">
+        <div class="card-header-title">
+          <h2>Optical Payload Feed & Computer Vision</h2>
+          <span class="info-circle" title="Real-time WebRTC drone camera stream with edge bounding box targeting">i</span>
+        </div>
+
+        <!-- Viewport Controls -->
+        <div class="viewport-controls-group">
+          <button type="button" id="snapLeftBtn" class="btn-hud-control active" title="Lock Target on Victim on Left Stairs">📍 Victim (Stairs)</button>
+          <button type="button" id="snapCenterBtn" class="btn-hud-control" title="Reset Target to Center">🎯 Center</button>
+          <button type="button" id="lockHumanBtn" class="btn-hud-control" title="Confirm Human at Current Crossbar">⚡ Lock Human</button>
+          <button type="button" id="switchCameraBtn" class="btn-hud-control" title="Switch Front/Rear Camera">🔄 Flip Cam</button>
+          <button type="button" id="simulateFeedBtn" class="btn-hud-control" title="Toggle Flood Photo / Live Camera">🛰️ Flood Photo</button>
+        </div>
+      </div>
+
+      <!-- Detection Mode Selector -->
+      <div class="detection-mode-bar">
+        <div class="mode-info-block">
+          <span class="mode-badge-title">AI TARGETING SYSTEM</span>
+          <strong id="modeStatusDesc" class="mode-title-desc">🤖 Automatic Human Detection Active</strong>
+        </div>
+        <div class="mode-toggle-group">
+          <button type="button" id="modeAutoBtn" class="btn-mode-select active">
+            <span class="mode-pulse-dot"></span>
+            <span>Automatic Human Detection</span>
+          </button>
+          <button type="button" id="modeManualBtn" class="btn-mode-select">
+            <span>✋</span>
+            <span>Detect Manually</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Video Viewfinder Frame -->
+      <div class="viewport-display" id="viewportDisplay">
+        <video id="droneVideo" autoplay playsinline muted></video>
+        <canvas id="snapshotCanvas" class="hidden"></canvas>
+        <img id="simulatedDroneImg" class="hidden" alt="Simulated aerial drone feed">
+
+        <!-- Tactical HUD Overlay Layer -->
+        <div class="hud-overlay" id="hudOverlay">
+          <div class="reticle-corner top-left"></div>
+          <div class="reticle-corner top-right"></div>
+          <div class="reticle-corner bottom-left"></div>
+          <div class="reticle-corner bottom-right"></div>
+          <div class="horizon-level-line"></div>
+
+          <div class="hud-mode-pill" id="hudModePill">
+            <span class="hud-mode-dot"></span>
+            <span id="hudModeText">🤖 AUTO AI DETECTION ENGAGED</span>
+          </div>
+
+          <div class="hud-scan-beam" id="hudScanBeam"></div>
+
+          <!-- AI Detection Bounding Box -->
+          <div class="ai-bounding-box" id="aiBoundingBox">
+            <div class="target-crosshair-ring" id="crosshairRing"></div>
+            <div class="target-crosshair-h"></div>
+            <div class="target-crosshair-v"></div>
+            <div class="target-center-dot"></div>
+
+            <div class="box-tag" id="boxTag">
+              <span id="boxStatusIcon">🚨</span>
+              <span id="detectedClassText">HUMAN DETECTED</span>
+              <span class="distress-pill-tag" id="boxDistressTag">DISTRESS: CRITICAL</span>
+            </div>
+
+            <div class="box-bottom-tag" id="boxBottomTag">
+              <span>PROBABILITY:</span>
+              <strong id="confidencePillText">98.8%</strong>
+              <span id="targetCoordsTag">X 17% · Y 48%</span>
+            </div>
+          </div>
+
+          <div class="hud-compass-bar">
+            <span>NW</span><span>·</span><span>330</span><span>·</span><span class="heading-active">042° NE</span><span>·</span><span>060</span><span>·</span><span>E</span>
+          </div>
+
+          <div class="tap-target-banner">
+            <span id="targetHintText">🤖 Autonomous AI locked on victim. Tap 'Detect Manually' to adjust reticle.</span>
+          </div>
+        </div>
+
+        <!-- Camera Off State Placeholder -->
+        <div id="cameraPromptBox" class="camera-prompt-overlay hidden">
+          <div class="prompt-icon">📷</div>
+          <p>Camera feed initializing or permissions required.</p>
+          <div style="display:flex;gap:10px;">
+            <button type="button" id="startCameraBtn" class="btn-primary">Enable Device Camera</button>
+            <button type="button" id="useSimPhotoBtn" class="btn-secondary">Load Simulated Aerial Photo</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Evidence Preview Strip -->
+      <div class="evidence-strip">
+        <div class="evidence-status">
+          <span class="pulse-dot-cyan"></span>
+          <span id="evidenceStateText">Live Camera Stream Active (WebRTC)</span>
+        </div>
+        <div class="evidence-tools">
+          <input type="file" id="manualFileInput" accept="image/*,video/*" class="hidden">
+          <label for="manualFileInput" class="btn-hud-small">📁 Upload Clip/Photo</label>
+          <button type="button" id="refreshAiBtn" class="btn-hud-small">⚡ Rescan AI Confidence</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SECTION 3: CLOUD INGESTION FORM & CLASSIFICATION
+         ======================================================== -->
+    <form id="reconForm" class="recon-form">
+      <!-- 1. GPS Coordinates Card -->
+      <div class="hud-card">
+        <div class="hud-card-header">
+          <span class="card-icon">📍</span>
+          <h3>Aerial Target GPS Coordinates</h3>
+          <span class="badge-lock" id="gpsLockBadge">GPS LOCKED</span>
+        </div>
+        
+        <div class="coords-grid">
+          <div class="coord-box">
+            <span class="coord-label">LATITUDE</span>
+            <span class="coord-val" id="latDisplay">18.520430</span>
+          </div>
+          <div class="coord-box">
+            <span class="coord-label">LONGITUDE</span>
+            <span class="coord-val" id="lngDisplay">73.856744</span>
+          </div>
+          <div class="coord-box">
+            <span class="coord-label">ALTITUDE</span>
+            <span class="coord-val" id="altDisplay">42.5 m</span>
+          </div>
+          <div class="coord-box">
+            <span class="coord-label">ACCURACY</span>
+            <span class="coord-val" id="accDisplay">±3.5 m</span>
+          </div>
+        </div>
+
+        <div class="hotspot-selector-row">
+          <label for="hotspotSelect">🎯 Quick Simulation Sector:</label>
+          <select id="hotspotSelect">
+            <option value="REAL_DEVICE">Device GPS Location (Auto-Detect)</option>
+            <option value="SECTOR_PUNE_RIVER" selected>Sector 4: Mutha River Submerged Area (18.5204, 73.8567)</option>
+            <option value="SECTOR_COLLAPSE_ZONE">Sector 7: Sadashiv Peth Structural Rubble (18.5132, 73.8512)</option>
+            <option value="SECTOR_FIRE_INDUSTRIAL">Sector 2: Hadapsar Industrial Fire Hazard (18.5089, 73.9258)</option>
+            <option value="SECTOR_HILL_LANDSLIDE">Sector 9: Sinhagad Landslide Entrapment (18.3664, 73.7558)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 2. AI Person Detection Card -->
+      <div class="hud-card">
+        <div class="hud-card-header">
+          <span class="card-icon">🎯</span>
+          <h3>AI Computer Vision & Confidence</h3>
+          <span class="badge-ai" id="aiModelBadge">AWS REKOGNITION EMULATOR</span>
+        </div>
+
+        <div class="confidence-meter-container">
+          <div class="confidence-readout">
+            <span class="confidence-title">VICTIM DISTRESS PROBABILITY:</span>
+            <strong class="confidence-percentage" id="confidenceValueText">96.8%</strong>
+          </div>
+          <div class="confidence-bar-track">
+            <div class="confidence-bar-fill" id="confidenceBarFill" style="width: 96.8%;"></div>
+          </div>
+          <div class="ai-tags-row" id="aiTagsRow">
+            <span class="tag-pill">👤 Person Detected</span>
+            <span class="tag-pill">🚨 Distress Hand Wave</span>
+            <span class="tag-pill">🌊 Flood Water Level High</span>
+            <span class="tag-pill">🏠 Rooftop Entrapment</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Operational Disaster Branch Classification (2-Column Grid) -->
+      <div class="hud-card">
+        <div class="hud-card-header">
+          <span class="card-icon">⚠️</span>
+          <h3>Operational Disaster Classification & Urgency</h3>
+        </div>
+
+        <div class="category-grid">
+          <label class="category-chip">
+            <input type="radio" name="category" value="Flood / Trapped" checked>
+            <span class="chip-content">
+              <span class="chip-icon">🌊</span>
+              <strong>Marine & Flood Branch</strong>
+            </span>
+          </label>
+          <label class="category-chip">
+            <input type="radio" name="category" value="Building Collapse">
+            <span class="chip-content">
+              <span class="chip-icon">🏚️</span>
+              <strong>Structural Collapse Branch</strong>
+            </span>
+          </label>
+          <label class="category-chip">
+            <input type="radio" name="category" value="Fire Incident">
+            <span class="chip-content">
+              <span class="chip-icon">🔥</span>
+              <strong>Fire & Hazmat Branch</strong>
+            </span>
+          </label>
+          <label class="category-chip">
+            <input type="radio" name="category" value="Medical Emergency">
+            <span class="chip-content">
+              <span class="chip-icon">🚑</span>
+              <strong>Medical Triage Branch</strong>
+            </span>
+          </label>
+        </div>
+
+        <div class="severity-strip">
+          <span class="severity-label">SEVERITY PRIORITY:</span>
+          <div class="severity-options">
+            <label class="sev-radio sev-critical">
+              <input type="radio" name="severity" value="CRITICAL" checked>
+              <span>CRITICAL (Life Threat)</span>
+            </label>
+            <label class="sev-radio sev-high">
+              <input type="radio" name="severity" value="HIGH">
+              <span>HIGH (Urgent Rescue)</span>
+            </label>
+            <label class="sev-radio sev-moderate">
+              <input type="radio" name="severity" value="MODERATE">
+              <span>MODERATE</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Observation Notes Card -->
+      <div class="hud-card">
+        <div class="hud-card-header">
+          <span class="card-icon">📝</span>
+          <h3>Drone Scout Field Observation Notes</h3>
+        </div>
+        <div class="form-group">
+          <textarea id="incidentNotes" rows="2" placeholder="e.g. UAV optical sensor locked onto 3 stranded victims signaling from second floor balcony. Water level rising fast."></textarea>
+        </div>
+      </div>
+
+      <!-- Transmission Action Button -->
+      <button type="submit" id="transmitBtn" class="btn-transmit">
+        <span class="btn-icon">⚡</span>
+        <div class="btn-label-group">
+          <strong>TRANSMIT DRONE COORDINATES & EVIDENCE TO AWS CLOUD</strong>
+          <small>POST /incidents ➔ AWS Lambda ➔ DynamoDB + S3 + SNS Alert</small>
+        </div>
+      </button>
+    </form>
+
+    <!-- Cloud Transmission Modal -->
+    <div id="resultModal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-icon-badge" id="modalIconBadge">✅</div>
+          <div>
+            <h3 id="modalTitle">Drone Telemetry Transmitted</h3>
+            <span class="sub-label">Amazon API Gateway & Lambda Execution</span>
+          </div>
+        </div>
+
+        <div class="modal-body" id="modalBody"></div>
+
+        <div class="modal-actions">
+          <a href="../rescue-dashboard/index.html" class="btn-modal-link" target="_blank">
+            🛡️ Open Rescue Dashboard ↗
+          </a>
+          <button type="button" id="closeModalBtn" class="btn-primary">Acknowledge Fix</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SaaS Footer -->
+    <footer class="hud-footer">
+      <div>Smart Disaster Management Cloud Platform | Aerial Reconnaissance Subsystem</div>
+      <div>Autonomous Search & Rescue Drone Fleet &bull; MIT-WPU Academic Year 2026-27</div>
+    </footer>
+  </div>
+
+  <script src="app.js?v=6.0"></script>
+</body>
+</html>
